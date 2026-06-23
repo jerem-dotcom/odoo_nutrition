@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_nutrition_log_list" model="ir.ui.view">
+        <field name="name">nutrition.log.list</field>
+        <field name="model">nutrition.log</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="date"/>
+                <field name="energy_kcal" avg="Moyenne/jour"/>
+                <field name="proteins" avg="Moyenne/jour"/>
+                <field name="carbohydrates" avg="Moyenne/jour"/>
+                <field name="fat" avg="Moyenne/jour"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_nutrition_log_form" model="ir.ui.view">
+        <field name="name">nutrition.log.form</field>
+        <field name="model">nutrition.log</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="date"/></h1>
+                    </div>
+                    <group>
+                        <group string="Ajout rapide par code-barres">
+                            <field name="barcode" default_focus="1"
+                                   placeholder="Scanner / saisir un code-barres"/>
+                            <button name="action_add_barcode" type="object"
+                                    string="Ajouter l'aliment" class="btn-primary"
+                                    invisible="not barcode"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Aliments" name="foods">
+                            <field name="food_line_ids">
+                                <list editable="bottom">
+                                    <field name="food_id"/>
+                                    <field name="percentage"/>
+                                    <field name="energy_kcal" sum="Total"/>
+                                    <field name="proteins" sum="Total"/>
+                                    <field name="carbohydrates" sum="Total"/>
+                                    <field name="fat" sum="Total"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Recettes" name="recipes">
+                            <field name="recipe_line_ids">
+                                <list editable="bottom">
+                                    <field name="recipe_id"/>
+                                    <field name="percentage"/>
+                                    <field name="energy_kcal" sum="Total"/>
+                                    <field name="proteins" sum="Total"/>
+                                    <field name="carbohydrates" sum="Total"/>
+                                    <field name="fat" sum="Total"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                    <group string="Totaux du jour">
+                        <group>
+                            <field name="energy_kcal"/>
+                            <field name="proteins"/>
+                            <field name="carbohydrates"/>
+                            <field name="sugars"/>
+                        </group>
+                        <group>
+                            <field name="fat"/>
+                            <field name="saturated_fat"/>
+                            <field name="fiber"/>
+                            <field name="salt"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_nutrition_log_search" model="ir.ui.view">
+        <field name="name">nutrition.log.search</field>
+        <field name="model">nutrition.log</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="date"/>
+                <filter name="this_month" string="Ce mois-ci"
+                        domain="[('date', '&gt;=', (context_today() + relativedelta(day=1)).strftime('%Y-%m-%d'))]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_nutrition_log" model="ir.actions.act_window">
+        <field name="name">Journal</field>
+        <field name="res_model">nutrition.log</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

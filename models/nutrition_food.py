@@ -32,6 +32,7 @@ class NutritionFood(models.Model):
     _name = "nutrition.food"
     _description = "Aliment"
     _order = "name"
+    _rec_names_search = ["name", "barcode"]
 
     name = fields.Char(string="Nom", required=True)
     barcode = fields.Char(string="Code-barres", index=True)

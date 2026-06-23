@@ -3,6 +3,10 @@
 
     <menuitem id="menu_nutrition_root" name="Nutrition" sequence="10"/>
 
+    <menuitem id="menu_nutrition_log" name="Journal"
+              parent="menu_nutrition_root"
+              action="action_nutrition_log" sequence="10"/>
+
     <menuitem id="menu_nutrition_recipe" name="Recettes"
               parent="menu_nutrition_root"
               action="action_nutrition_recipe" sequence="20"/>

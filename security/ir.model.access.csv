@@ -1,3 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_nutrition_food,nutrition.food,model_nutrition_food,base.group_user,1,1,1,1
 access_nutrition_recipe,nutrition.recipe,model_nutrition_recipe,base.group_user,1,1,1,1
+access_nutrition_log,nutrition.log,model_nutrition_log,base.group_user,1,1,1,1
+access_nutrition_log_food,nutrition.log.food,model_nutrition_log_food,base.group_user,1,1,1,1
+access_nutrition_log_recipe,nutrition.log.recipe,model_nutrition_log_recipe,base.group_user,1,1,1,1

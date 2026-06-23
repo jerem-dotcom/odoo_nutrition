@@ -53,13 +53,26 @@ Agrégation de produits entiers. Une recette = un **Many2many `food_ids`** de
 - Limite assumée (simplicité) : un aliment ne peut figurer qu'une fois (pas de doublon /
   pas de "2 pots"). Migrer vers un modèle de lignes si besoin un jour.
 
-### `nutrition.log` — Journal de consommation 🔜 (à faire, cœur de l'usage)
-Saisie quotidienne. Idée : saisie par **code-barres**, consommation d'un **aliment** (en
-g/mL) ou d'une **recette** (en **% consommé** du total). Agrégation des macros par jour.
+### `nutrition.log` — Journée de consommation (`models/nutrition_log.py`) ✅
+**Un enregistrement par jour** (`date` unique). Contient deux jeux de lignes, toutes deux
+basées sur un **% consommé** (saisie uniforme) :
+- `food_line_ids` → `nutrition.log.food` : aliment + `percentage` (% du produit entier).
+- `recipe_line_ids` → `nutrition.log.recipe` : recette + `percentage` (% du total).
 
-### `nutrition.day` + objectifs 🔜 (à faire)
-Synthèse par journée : totaux réels vs **objectifs** (kcal, macros) vs restant. Objectifs
-par défaut configurables (probable `res.config.settings`).
+Totaux du jour (8 macros stockées) = Σ lignes aliments + Σ lignes recettes.
+- Ligne aliment : `food.macro_pour_100 × total_quantity/100 × percentage/100`
+  (⚠️ nécessite que `total_quantity` de l'aliment soit renseigné, sinon macros = 0).
+- Ligne recette : `recipe.macro_totale × percentage / 100`.
+
+Saisie code-barres : champ `barcode` + bouton `action_add_barcode` **au niveau de la
+journée** (enregistrement déjà sauvé → pas de rollback comme en onchange) qui résout/crée
+l'aliment (`_get_or_create_by_barcode`) et ajoute une ligne via `Command.create`. Le
+Many2one `food_id` est aussi cherchable par code-barres (`_rec_names_search` sur food).
+
+### Objectifs quotidiens 🔜 (à faire)
+Ajouter sur `nutrition.log` des champs objectif (kcal, macros) + restant (réel vs cible).
+Objectifs par défaut configurables (probable `res.config.settings`). Pas de modèle
+`nutrition.day` séparé : `nutrition.log` EST la journée.
 
 ## OpenFoodFacts — points clés
 - Endpoint v2 `world.openfoodfacts.org/api/v2/product/{barcode}.json`, header
@@ -69,14 +82,16 @@ par défaut configurables (probable `res.config.settings`).
 - Voir la mémoire projet `off-api-quirks` pour le détail.
 
 ## État & feuille de route
-- ✅ `nutrition.food` (+ OFF), `nutrition.recipe`, sécurité, menus, vues.
-- 🔜 `nutrition.log` (journal), puis `nutrition.day` + objectifs, puis stats
+- ✅ `nutrition.food` (+ OFF), `nutrition.recipe`, `nutrition.log` (+ lignes
+  food/recipe), sécurité, menus, vues.
+- 🔜 Objectifs quotidiens sur `nutrition.log` (réel vs cible), puis stats
   (pivot/graph par Nutri-Score / NOVA / date).
 
 ## Fichiers
-- `models/` : `nutrition_food.py`, `nutrition_recipe.py` (+ `__init__.py`).
+- `models/` : `nutrition_food.py`, `nutrition_recipe.py`, `nutrition_log.py`
+  (+ `__init__.py`).
 - `views/` : `nutrition_food_views.xml`, `nutrition_recipe_views.xml`,
-  `nutrition_menus.xml`.
+  `nutrition_log_views.xml`, `nutrition_menus.xml`.
 - `security/ir.model.access.csv` : accès complet `base.group_user` (mono-user).
 
 ## Vérification rapide
