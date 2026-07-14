@@ -28,6 +28,9 @@ class NutritionLog(models.Model):
     fiber = fields.Float(string="Fibres (g)", compute="_compute_totals", store=True)
     salt = fields.Float(string="Sel (g)", compute="_compute_totals", store=True)
 
+    # Récapitulatif texte prêt à copier/partager (bouton CopyClipboardButton).
+    share_text = fields.Text(string="Détail à partager", compute="_compute_share_text")
+
     _date_uniq = models.Constraint(
         "unique(date)",
         "Une journée existe déjà pour cette date.",
@@ -49,6 +52,42 @@ class NutritionLog(models.Model):
             log.saturated_fat = sum(foods.mapped("saturated_fat"))
             log.fiber = sum(foods.mapped("fiber"))
             log.salt = sum(foods.mapped("salt"))
+
+    @api.depends(
+        "date", "energy_kcal", "proteins", "carbohydrates", "sugars",
+        "fat", "saturated_fat", "fiber", "salt",
+        "food_line_ids.food_id", "food_line_ids.quantity",
+        "food_line_ids.energy_kcal", "food_line_ids.proteins",
+        "food_line_ids.carbohydrates", "food_line_ids.fat",
+    )
+    def _compute_share_text(self):
+        """Construit un récapitulatif texte de la journée : chaque aliment avec sa
+        quantité et ses macros, puis les totaux du jour."""
+        for log in self:
+            lines = ["Nutrition — %s" % (log.date or ""), "", "Aliments :"]
+            for line in log.food_line_ids:
+                lines.append(
+                    "- %s (%.0f g) : %.0f kcal | P %.1f g | G %.1f g | L %.1f g"
+                    % (
+                        line.food_id.name or "?",
+                        line.quantity,
+                        line.energy_kcal,
+                        line.proteins,
+                        line.carbohydrates,
+                        line.fat,
+                    )
+                )
+            lines.append("")
+            lines.append(
+                "Total du jour : %.0f kcal | Protéines %.1f g | Glucides %.1f g "
+                "(dont sucres %.1f g) | Lipides %.1f g (dont saturés %.1f g) | "
+                "Fibres %.1f g | Sel %.2f g"
+                % (
+                    log.energy_kcal, log.proteins, log.carbohydrates, log.sugars,
+                    log.fat, log.saturated_fat, log.fiber, log.salt,
+                )
+            )
+            log.share_text = "\n".join(lines)
 
     def action_add_barcode(self):
         """Résout le code-barres via OpenFoodFacts (crée l'aliment si besoin) et ajoute

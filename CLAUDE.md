@@ -59,6 +59,11 @@ l'aliment (`_get_or_create_by_barcode`) et ajoute une ligne via `Command.create`
 (`quantity` à renseigner ensuite). Le Many2one `food_id` est aussi cherchable par
 code-barres (`_rec_names_search` sur food).
 
+Partage : champ calculé `share_text` (`_compute_share_text`) = récap texte du jour
+(chaque aliment avec quantité + macros, puis totaux). Affiché dans la button box de la
+form via le widget natif Odoo `CopyClipboardButton` (bouton « Copier le détail du jour »,
+copie le contenu du champ dans le presse-papier, sans JS custom).
+
 ### Objectifs quotidiens 🔜 (à faire)
 Ajouter sur `nutrition.log` des champs objectif (kcal, macros) + restant (réel vs cible).
 Objectifs par défaut configurables (probable `res.config.settings`). Pas de modèle
