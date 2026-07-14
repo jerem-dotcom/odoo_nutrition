@@ -33,32 +33,16 @@
                                     invisible="not barcode"/>
                         </group>
                     </group>
-                    <notebook>
-                        <page string="Aliments" name="foods">
-                            <field name="food_line_ids">
-                                <list editable="bottom">
-                                    <field name="food_id"/>
-                                    <field name="percentage"/>
-                                    <field name="energy_kcal" sum="Total"/>
-                                    <field name="proteins" sum="Total"/>
-                                    <field name="carbohydrates" sum="Total"/>
-                                    <field name="fat" sum="Total"/>
-                                </list>
-                            </field>
-                        </page>
-                        <page string="Recettes" name="recipes">
-                            <field name="recipe_line_ids">
-                                <list editable="bottom">
-                                    <field name="recipe_id"/>
-                                    <field name="percentage"/>
-                                    <field name="energy_kcal" sum="Total"/>
-                                    <field name="proteins" sum="Total"/>
-                                    <field name="carbohydrates" sum="Total"/>
-                                    <field name="fat" sum="Total"/>
-                                </list>
-                            </field>
-                        </page>
-                    </notebook>
+                    <field name="food_line_ids">
+                        <list editable="bottom">
+                            <field name="food_id"/>
+                            <field name="quantity"/>
+                            <field name="energy_kcal" sum="Total"/>
+                            <field name="proteins" sum="Total"/>
+                            <field name="carbohydrates" sum="Total"/>
+                            <field name="fat" sum="Total"/>
+                        </list>
+                    </field>
                     <group string="Totaux du jour">
                         <group>
                             <field name="energy_kcal"/>

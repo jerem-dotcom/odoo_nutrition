@@ -10,7 +10,6 @@
         'security/ir.model.access.csv',
 
         'views/nutrition_food_views.xml',
-        'views/nutrition_recipe_views.xml',
         'views/nutrition_log_views.xml',
         'views/nutrition_menus.xml',
     ],

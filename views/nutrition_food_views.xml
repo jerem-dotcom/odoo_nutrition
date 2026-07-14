@@ -38,8 +38,6 @@
                         <group string="Identification">
                             <field name="barcode" default_focus="1"/>
                             <field name="brand"/>
-                            <field name="total_quantity"/>
-                            <field name="total_unit"/>
                         </group>
                         <group string="Classification">
                             <field name="nutriscore_grade"/>

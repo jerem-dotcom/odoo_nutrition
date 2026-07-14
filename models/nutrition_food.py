@@ -9,8 +9,8 @@ _logger = logging.getLogger(__name__)
 
 OFF_BASE_URL = "https://world.openfoodfacts.org/api/v2/product/%s.json"
 OFF_FIELDS = (
-    "product_name,product_name_fr,brands,image_url,quantity,"
-    "product_quantity_unit,nutriscore_grade,nova_group,nutriments"
+    "product_name,product_name_fr,brands,image_url,"
+    "nutriscore_grade,nova_group,nutriments"
 )
 OFF_USER_AGENT = "Odoo-Nutrition/1.0 (perso)"
 OFF_TIMEOUT = 10
@@ -38,12 +38,6 @@ class NutritionFood(models.Model):
     barcode = fields.Char(string="Code-barres", index=True)
     brand = fields.Char(string="Marque")
     image_url = fields.Char(string="Image (URL)")
-    total_quantity = fields.Float(string="Quantité totale")
-    total_unit = fields.Selection(
-        [("g", "g"), ("ml", "mL")],
-        string="Unité",
-        default="g",
-    )
 
     # Macros pour 100 g
     energy_kcal = fields.Float(string="Calories (kcal)")
@@ -117,13 +111,6 @@ class NutritionFood(models.Model):
             "image_url": product.get("image_url"),
         }
 
-        qty = product.get("product_quantity")
-        unit = (product.get("product_quantity_unit") or "").lower()
-        try:
-            values["total_quantity"] = float(qty) if qty else 0.0
-        except (TypeError, ValueError):
-            values["total_quantity"] = 0.0
-        values["total_unit"] = "ml" if unit == "ml" else "g"
         for field_name, off_key in OFF_NUTRIMENT_MAP.items():
             values[field_name] = nutriments.get(off_key, 0.0) or 0.0
 

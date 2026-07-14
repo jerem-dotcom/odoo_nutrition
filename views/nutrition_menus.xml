@@ -7,10 +7,6 @@
               parent="menu_nutrition_root"
               action="action_nutrition_log" sequence="10"/>
 
-    <menuitem id="menu_nutrition_recipe" name="Recettes"
-              parent="menu_nutrition_root"
-              action="action_nutrition_recipe" sequence="20"/>
-
     <menuitem id="menu_nutrition_food" name="Aliments"
               parent="menu_nutrition_root"
               action="action_nutrition_food" sequence="30"/>
